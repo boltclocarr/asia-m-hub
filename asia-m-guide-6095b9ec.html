@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界杯信息卡片 · 日常查询与延伸阅读</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f5f9fc;
+            color: #1e2b3a;
+            line-height: 1.6;
+            padding: 24px 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-wrapper {
+            max-width: 1120px;
+            width: 100%;
+        }
+
+        /* 主视觉网格卡片 */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .hero-card {
+            background: linear-gradient(145deg, #e7f3ee 0%, #d1e6dd 100%);
+            border-radius: 28px;
+            padding: 32px 28px;
+            box-shadow: 0 12px 28px -8px rgba(30, 75, 70, 0.14);
+            border: 1px solid rgba(68, 142, 120, 0.18);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .hero-card:hover {
+            box-shadow: 0 18px 36px -10px rgba(30, 75, 70, 0.22);
+        }
+
+        .hero-card h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #0d3e35;
+            margin-bottom: 12px;
+        }
+
+        .hero-card p {
+            font-size: 1.05rem;
+            color: #1a4a3e;
+            max-width: 680px;
+        }
+
+        .hero-accent {
+            display: inline-block;
+            background: #236b5a;
+            color: #f0f9f4;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 40px;
+            margin-bottom: 14px;
+            letter-spacing: 0.4px;
+        }
+
+        /* 用途卡片 —— 三列网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin: 32px 0 36px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px 18px 22px;
+            box-shadow: 0 4px 12px rgba(0, 40, 34, 0.06);
+            border-left: 4px solid #2b8b74;
+            transition: all 0.2s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(38, 110, 92, 0.18);
+            border-left-color: #1b6f5d;
+        }
+
+        .info-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b4238;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card h3::before {
+            content: "▹";
+            color: #2b8b74;
+            font-weight: 400;
+        }
+
+        .info-card p {
+            font-size: 0.95rem;
+            color: #2e4040;
+            margin-bottom: 6px;
+        }
+
+        .info-card .tag {
+            background: #e1f0ea;
+            color: #0f5545;
+            border-radius: 30px;
+            padding: 2px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        /* 适合人群 + 自然链接段落 */
+        .section-block {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 28px 26px;
+            margin: 28px 0 32px;
+            box-shadow: 0 6px 18px rgba(34, 80, 67, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .section-block h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0b3d33;
+            border-bottom: 2px solid #cde3db;
+            padding-bottom: 10px;
+            margin-bottom: 4px;
+        }
+
+        .audience-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            list-style: none;
+        }
+
+        .audience-list li {
+            background: #f1f9f5;
+            padding: 12px 16px;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            color: #173d34;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .audience-list li::before {
+            content: "●";
+            color: #308d77;
+            font-size: 0.7rem;
+        }
+
+        .link-sentence {
+            background: #e9f3ee;
+            border-radius: 18px;
+            padding: 18px 24px;
+            margin-top: 8px;
+            font-size: 1rem;
+            color: #123d34;
+            border: 1px solid #bcd9cf;
+        }
+
+        .link-sentence a {
+            color: #0d5a47;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px solid #308d77;
+            padding-bottom: 1px;
+        }
+
+        .link-sentence a:hover {
+            background: #d0e8df;
+            border-bottom-color: #0f6e59;
+        }
+
+        /* FAQ 摘要 / 提示折页 */
+        .faq-summary {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin: 28px 0 20px;
+        }
+
+        .faq-item {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 14px 20px;
+            border: 1px solid #dae9e3;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+        }
+
+        .faq-item strong {
+            color: #0a4f40;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .faq-item p {
+            font-size: 0.92rem;
+            color: #2b4842;
+        }
+
+        .footnote {
+            text-align: center;
+            margin-top: 36px;
+            padding: 20px 0 6px;
+            border-top: 1px solid #cfe2db;
+            color: #3b645a;
+            font-size: 0.9rem;
+        }
+
+        .footnote a {
+            color: #165f4d;
+            font-weight: 500;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        /* 响应式微调 */
+        @media (min-width: 640px) {
+            .hero-card {
+                padding: 40px 36px;
+            }
+            .hero-card h1 {
+                font-size: 2.6rem;
+            }
+            .section-block {
+                padding: 34px 32px;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .faq-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* 点缀 */
+        .dot-accent {
+            color: #308d77;
+        }
+
+        .small-note {
+            background: #f1f7f4;
+            border-radius: 14px;
+            padding: 14px 20px;
+            font-size: 0.9rem;
+            color: #1b5647;
+            margin: 14px 0 0;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #b1cfc3, transparent);
+            margin: 24px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- 主视觉卡片 -->
+    <div class="hero-grid">
+        <div class="hero-card">
+            <span class="hero-accent">信息卡片 · 日常检索</span>
+            <h1>世界杯数据·对照·延伸</h1>
+            <p>围绕赛事记录、赛程对照、背景延伸三个维度，提供简洁、可交叉查阅的信息结构。适合赛前准备、赛后复盘或资料整理。</p>
+        </div>
+    </div>
+
+    <!-- 用途卡片：三个独立用途 -->
+    <div class="card-grid">
+        <div class="info-card">
+            <h3>快速对照</h3>
+            <p>分组、积分、交锋记录、场地信息。适合比赛日快速定位，避免多页面切换。</p>
+            <span class="tag">赛程</span> <span class="tag">数据</span>
+        </div>
+        <div class="info-card">
+            <h3>延伸阅读</h3>
+            <p>历届冠军、最佳阵容、经典战役、规则变动。每届赛事都有背景档案与趋势分析。</p>
+            <span class="tag">历史</span> <span class="tag">背景</span>
+        </div>
+        <div class="info-card">
+            <h3>工具索引</h3>
+            <p>表格筛选、对比视图、关联链接。从一场比赛延伸到球员、球场、裁判等参考资料。</p>
+            <span class="tag">关联</span> <span class="tag">筛选</span>
+        </div>
+    </div>
+
+    <!-- 适合人群 + 自然链接段落 (合并区块) -->
+    <div class="section-block">
+        <h2>适合人群 · 使用场景</h2>
+        <ul class="audience-list">
+            <li>赛事数据分析者</li>
+            <li>内容编辑与媒体人</li>
+            <li>球迷与观赛组织者</li>
+            <li>体育历史研究者</li>
+            <li>博彩信息参考者*</li>
+        </ul>
+        <div class="small-note">* 仅提供公开赛事数据与对照，不构成任何预测或建议。</div>
+
+        <!-- 自然嵌入链接的段落 -->
+        <div class="link-sentence">
+            <p>如果你需要查阅更完整的赛程、积分或参赛队档案，可以直接访问 <a href="https://asia-m-shijiebei.com">世界杯</a> 站点，那里整理了多届赛事的结构化信息，方便进行横向对比与深度查阅。</p>
+        </div>
+    </div>
+
+    <!-- FAQ 摘要 / 常见参照点 -->
+    <div class="faq-summary">
+        <div class="faq-item">
+            <strong>❓ 如何快速查找某届小组赛积分？</strong>
+            <p>网站提供按年份筛选的完整积分表，同时附带交锋记录与净胜球细节。</p>
+        </div>
+        <div class="faq-item">
+            <strong>❓ 哪里可以看到历史最佳射手排名？</strong>
+            <p>数据列表包含每届金靴、总进球排名以及出场次数，可按届次或球员筛选。</p>
+        </div>
+        <div class="faq-item">
+            <strong>❓ 裁判名单与执法场次有汇总吗？</strong>
+            <p>是的。裁判档案、红黄牌统计及关键判罚记录均收录于裁判数据模块。</p>
+        </div>
+        <div class="faq-item">
+            <strong>❓ 球场容量与举办城市信息？</strong>
+            <p>每届场馆、座位数、举办城市及天气参考，以卡片形式并列展示。</p>
+        </div>
+    </div>
+
+    <!-- 额外延伸：提示性段落 -->
+    <hr>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px 20px; justify-content: space-between; align-items: baseline;">
+        <p style="color: #245e4f; font-size: 0.95rem;"><span class="dot-accent">✦</span> 建议使用桌面或平板浏览以获取最佳网格对照体验，移动端同样适配。</p>
+        <p style="color: #2e6b5b; font-size: 0.9rem;">→ 信息截止至最近一届完整赛事。</p>
+    </div>
+
+    <!-- 页脚 / 再次自然链接 -->
+    <div class="footnote">
+        <p>基于公开数据整理 · 更多对照信息可参考 <a href="https://asia-m-shijiebei.com">世界杯</a> 主站 · 适用于查询与研究</p>
+    </div>
+
+</div>
+</body>
+</html>
